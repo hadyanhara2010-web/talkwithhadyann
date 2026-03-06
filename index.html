@@ -354,7 +354,7 @@
             }
         }
 
-        /* Slider hewan dengan ukuran diperkecil setengahnya */
+        /* Slider hewan dengan ukuran sangat kecil */
         .slider-wrapper {
             position: relative;
             overflow: hidden;
@@ -363,7 +363,7 @@
             border-radius: 48px;
             background: rgba(255,255,255,0.5);
             backdrop-filter: blur(4px);
-            padding: 12px 6px; /* padding lebih kecil */
+            padding: 8px 4px; /* padding lebih kecil */
             box-shadow: var(--shadow);
             border: 1px solid #ffefe4;
             touch-action: pan-y pinch-zoom;
@@ -373,7 +373,7 @@
             width: max-content;
             cursor: grab;
             animation: autoSlide 40s linear infinite;
-            gap: 12px; /* gap lebih kecil */
+            gap: 8px; /* gap lebih kecil */
             user-select: none;
             -webkit-user-select: none;
             will-change: transform;
@@ -390,19 +390,19 @@
             100% { transform: translateX(-33.333%); }
         }
         .flower-item {
-            flex: 0 0 100px; /* setengah dari 200px */
+            flex: 0 0 50px; /* setengah dari 100px */
             text-align: center;
             transition: 0.25s;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
         .flower-item img {
-            width: 100px; /* setengah dari 200px */
-            height: 100px; /* setengah dari 200px */
+            width: 50px; /* setengah dari 100px */
+            height: 50px; /* setengah dari 100px */
             object-fit: cover;
-            border-radius: 20px; /* lebih kecil */
-            box-shadow: 0 8px 15px -5px rgba(80, 50, 25, 0.2);
-            border: 3px solid white;
+            border-radius: 12px; /* lebih kecil */
+            box-shadow: 0 4px 8px -3px rgba(80, 50, 25, 0.2);
+            border: 2px solid white;
             transition: 0.2s;
             background: #f7efe7;
             pointer-events: none;
@@ -418,11 +418,11 @@
         /* Responsive untuk tablet */
         @media (min-width: 641px) and (max-width: 1024px) {
             .flower-item {
-                flex: 0 0 150px; /* lebih besar dari mobile tapi tetap proporsional */
+                flex: 0 0 75px; /* lebih besar dari mobile */
             }
             .flower-item img {
-                width: 150px;
-                height: 150px;
+                width: 75px;
+                height: 75px;
             }
         }
         
