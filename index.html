@@ -21,7 +21,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap abu-abu di mobile */
+            -webkit-tap-highlight-color: transparent;
         }
       
         body {
@@ -354,7 +354,7 @@
             }
         }
 
-        /* Slider hewan - diperbaiki untuk klik di mobile */
+        /* Slider hewan dengan animasi auto slide */
         .slider-wrapper {
             position: relative;
             overflow: hidden;
@@ -366,27 +366,33 @@
             padding: 16px 8px;
             box-shadow: var(--shadow);
             border: 1px solid #ffefe4;
-            touch-action: pan-y pinch-zoom; /* Memungkinkan scroll horizontal dengan sentuhan */
+            touch-action: pan-y pinch-zoom;
         }
         .flower-slider {
             display: flex;
             width: max-content;
             cursor: grab;
+            animation: autoSlide 40s linear infinite;
             gap: 20px;
             user-select: none;
             -webkit-user-select: none;
-            transition: transform 0.05s ease; /* Halus saat dragging berhenti */
             will-change: transform;
+        }
+        .flower-slider.paused {
+            animation-play-state: paused;
         }
         .flower-slider.dragging {
             cursor: grabbing;
-            transition: none; /* Tidak ada transisi saat drag agar responsif */
+            animation-play-state: paused; /* Pause animasi saat di-drag */
+        }
+        @keyframes autoSlide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-33.333%); }
         }
         .flower-item {
             flex: 0 0 200px;
             text-align: center;
             transition: 0.25s;
-            /* Pastikan area klik mencakup seluruh item */
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
@@ -399,13 +405,12 @@
             border: 4px solid white;
             transition: 0.2s;
             background: #f7efe7;
-            pointer-events: none; /* Gambar tidak menangkap event, biarkan parent yang handle */
+            pointer-events: none;
         }
         .flower-item:hover img {
             transform: scale(1.01);
             border-color: #fadbc5;
         }
-        /* Efek tap di mobile */
         .flower-item:active {
             opacity: 0.8;
         }
@@ -671,6 +676,14 @@
             .mekar-progress-item {
                 padding: 8px 16px;
             }
+            
+            .flower-item {
+                flex: 0 0 150px;
+            }
+            .flower-item img {
+                width: 150px;
+                height: 150px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -695,16 +708,6 @@
                 padding: 6px 12px;
             }
             
-            .flower-item {
-                flex: 0 0 150px;
-            }
-            .flower-item img {
-                width: 150px;
-                height: 150px;
-            }
-        }
-
-        @media (max-width: 380px) {
             .flower-item {
                 flex: 0 0 120px;
             }
@@ -791,7 +794,7 @@
         <div class="mekar-game-section" id="mekar">
             <h2 style="text-align:center; font-size:1.9rem; font-weight:600; color:#5a4740; margin-bottom:6px;">🌱 Mekar Harapan</h2>
             <p style="text-align:center; max-width:550px; margin:0 auto 25px; color:#6d5c53; background:#ffeee5; padding:10px 22px; border-radius:60px; font-size:0.95rem;">
-                Rawat hingga mekar — setiap tetes dan pupuk membawa perubahan.
+                Rawat hingga mekar, setiap tetes dan pupuk membawa perubahan.
             </p>
             
             <div class="mekar-game-container" id="mekar-game-container">
@@ -947,7 +950,7 @@
         }
     </script>
 
-    <!-- Script untuk slider hewan yang bisa diklik di mobile -->
+    <!-- Script untuk slider hewan dengan animasi dan klik -->
     <script>
         (function() {
             // Deskripsi hewan
@@ -968,10 +971,11 @@
             // Variabel untuk drag
             let isDragging = false;
             let startX, scrollLeft;
-            let dragThreshold = 5; // Pixel threshold untuk membedakan klik dan drag
             let startXPos;
+            let dragThreshold = 5;
+            let dragDistance = 0;
 
-            // Event handler untuk membuka popup
+            // Fungsi untuk membuka popup
             function openPopup(flowerKey) {
                 if (descriptions[flowerKey]) {
                     titleEl.textContent = descriptions[flowerKey].title;
@@ -980,40 +984,46 @@
                 }
             }
 
-            // Mouse/Touch event untuk drag & klik
+            // Mouse/Touch event dengan auto slide
             function handleDragStart(e) {
-                // Ambil posisi X (mouse atau sentuhan)
                 const pageX = e.type === 'mousedown' ? e.pageX : e.touches[0].pageX;
-                isDragging = false; // Reset dulu, akan jadi true jika digerakkan cukup jauh
+                isDragging = false;
+                dragDistance = 0;
                 startX = pageX - slider.offsetLeft;
                 startXPos = pageX;
                 scrollLeft = slider.scrollLeft;
                 slider.classList.add('dragging');
+                // Pause animasi saat mulai drag
+                slider.style.animationPlayState = 'paused';
             }
 
             function handleDragMove(e) {
                 if (!slider.classList.contains('dragging')) return;
-                e.preventDefault(); // Mencegah scroll halaman saat drag slider
+                e.preventDefault();
                 
                 const pageX = e.type === 'mousemove' ? e.pageX : e.touches[0].pageX;
                 const x = pageX - slider.offsetLeft;
                 const walk = (x - startX) * 1.5;
                 slider.scrollLeft = scrollLeft - walk;
                 
-                // Jika pergerakan melebihi threshold, anggap sebagai drag
-                if (Math.abs(pageX - startXPos) > dragThreshold) {
+                dragDistance = Math.abs(pageX - startXPos);
+                if (dragDistance > dragThreshold) {
                     isDragging = true;
                 }
             }
 
             function handleDragEnd(e) {
                 slider.classList.remove('dragging');
+                // Lanjutkan animasi setelah drag selesai (dengan sedikit delay)
+                setTimeout(() => {
+                    if (!slider.classList.contains('dragging')) {
+                        slider.style.animationPlayState = 'running';
+                    }
+                }, 100);
                 
-                // Jika tidak ada drag (pergerakan kecil), anggap sebagai klik
-                if (!isDragging) {
-                    // Cari elemen flower-item yang diklik
+                // Jika bukan drag (klik biasa), buka popup
+                if (!isDragging && dragDistance <= dragThreshold) {
                     let target = e.target;
-                    // Cari parent dengan class flower-item
                     while (target && !target.classList.contains('flower-item')) {
                         target = target.parentElement;
                     }
@@ -1027,13 +1037,16 @@
                 isDragging = false;
             }
 
-            // Pasang event listener
+            // Pasang event listener untuk mouse
             slider.addEventListener('mousedown', handleDragStart);
             slider.addEventListener('mousemove', handleDragMove);
             slider.addEventListener('mouseup', handleDragEnd);
             slider.addEventListener('mouseleave', () => {
-                slider.classList.remove('dragging');
-                isDragging = false;
+                if (slider.classList.contains('dragging')) {
+                    slider.classList.remove('dragging');
+                    slider.style.animationPlayState = 'running';
+                    isDragging = false;
+                }
             });
 
             // Touch events
@@ -1042,14 +1055,15 @@
             slider.addEventListener('touchend', handleDragEnd);
             slider.addEventListener('touchcancel', () => {
                 slider.classList.remove('dragging');
+                slider.style.animationPlayState = 'running';
                 isDragging = false;
             });
 
-            // Fallback klik langsung di item (untuk jaga-jaga)
+            // Fallback klik
             items.forEach(item => {
                 item.addEventListener('click', (e) => {
-                    // Hanya proses jika bukan drag (dicegah oleh flag isDragging)
-                    if (!isDragging) {
+                    if (!isDragging && dragDistance <= dragThreshold) {
+                        e.stopPropagation();
                         const flowerKey = item.getAttribute('data-flower');
                         openPopup(flowerKey);
                     }
@@ -1058,12 +1072,10 @@
         })();
     </script>
 
-    <!-- Script game Mekar Harapan (tetap sama) -->
+    <!-- Script game Mekar Harapan -->
     <script>
         (function() {
-            // ────────────────────────────────────────────────
             // GAME CONFIG (Mekar Harapan)
-            // ────────────────────────────────────────────────
             const gameConfig = {
                 growthSpeed: 0.5,
                 phaseRequirements: [1, 3, 5, 6, 8],
