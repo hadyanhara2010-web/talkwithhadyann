@@ -212,6 +212,7 @@
             min-height: 100px;
             font-family: 'Inter', sans-serif;
             transition: 0.2s;
+            width: 100%;
         }
         #diaryText:focus {
             border-color: #8b5a2b;
@@ -233,6 +234,8 @@
             gap: 8px;
             border-bottom: 4px solid #4d3724;
             white-space: nowrap;
+            min-width: 140px;
+            justify-content: center;
         }
         .share-diary-btn:hover {
             background: #5a3f2a;
@@ -282,6 +285,73 @@
             background: rgba(255,255,255,0.5);
             border-radius: 60px;
             text-align: center;
+        }
+
+        /* Responsive styles untuk mobile */
+        @media (max-width: 640px) {
+            .diary-section {
+                padding: 20px 16px;
+            }
+            
+            .diary-input-wrapper {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .diary-input-wrapper textarea {
+                width: 100%;
+                min-height: 120px;
+                font-size: 16px; /* Mencegah zoom on focus di iOS */
+            }
+            
+            .share-diary-btn {
+                width: 100%;
+                padding: 16px 20px;
+                font-size: 1rem;
+                min-width: unset;
+            }
+            
+            .diary-note {
+                font-size: 0.9rem;
+                padding: 16px 12px;
+                line-height: 1.5;
+            }
+            
+            .diary-header h3 {
+                font-size: 1.4rem;
+            }
+            
+            .diary-content {
+                padding: 20px 16px;
+            }
+            
+            .diary-text {
+                font-size: 1rem;
+            }
+        }
+
+        /* Untuk layar sangat kecil */
+        @media (max-width: 380px) {
+            .diary-section {
+                padding: 16px 12px;
+            }
+            
+            .diary-input-container {
+                padding: 16px 12px;
+            }
+            
+            #diaryText {
+                padding: 14px 16px;
+            }
+            
+            .share-diary-btn {
+                padding: 14px 16px;
+            }
+            
+            .diary-note {
+                padding: 14px 10px;
+                font-size: 0.85rem;
+            }
         }
 
         /* Chat section dihapus sesuai permintaan */
@@ -686,13 +756,100 @@
             0%{ opacity:1; transform:translateY(0) scale(1); }
             100%{ opacity:0; transform:translateY(-120px) scale(0.4); }
         }
-        @media (max-width:600px){
-            .mekar-resource-icons{ gap:40px; }
-            .mekar-resource-icon{ width:70px; height:70px; }
-            .mekar-progress-phase{ font-size:1.2rem; }
+
+        /* Responsive untuk game Mekar Harapan di mobile */
+        @media (max-width: 768px) {
+            .mekar-game-container {
+                height: 500px;
+            }
+            .mekar-resource-icons {
+                gap: 40px;
+                top: 20px;
+            }
+            .mekar-resource-icon {
+                width: 65px;
+                height: 65px;
+            }
+            .mekar-progress-phase {
+                font-size: 1.1rem;
+            }
+            .mekar-progress-resources {
+                gap: 16px;
+                font-size: 1.2rem;
+            }
+            .mekar-progress-item {
+                padding: 8px 16px;
+            }
         }
 
-        /* Form pengiriman tersembunyi untuk Google Form */
+        @media (max-width: 480px) {
+            .mekar-game-container {
+                height: 450px;
+            }
+            .mekar-resource-icons {
+                gap: 30px;
+            }
+            .mekar-resource-icon {
+                width: 55px;
+                height: 55px;
+            }
+            .mekar-progress-phase {
+                font-size: 1rem;
+            }
+            .mekar-progress-resources {
+                gap: 12px;
+                font-size: 1rem;
+            }
+            .mekar-progress-item {
+                padding: 6px 12px;
+            }
+        }
+
+        /* Responsive untuk flower slider */
+        @media (max-width: 768px) {
+            .flower-item {
+                flex: 0 0 150px;
+            }
+            .flower-item img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .flower-item {
+                flex: 0 0 120px;
+            }
+            .flower-item img {
+                width: 120px;
+                height: 120px;
+            }
+            .slider-wrapper {
+                padding: 12px 4px;
+            }
+        }
+
+        /* Responsive untuk puzzle grid */
+        @media (max-width: 640px) {
+            .puzzle-grid {
+                gap: 3px;
+                padding: 12px;
+            }
+            .puzzle-cell {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .puzzle-grid {
+                gap: 2px;
+                padding: 8px;
+            }
+            .puzzle-cell {
+                font-size: 0.8rem;
+            }
+        }
+
         .hidden-form {
             display: none;
         }
@@ -737,7 +894,7 @@
                 </div>
             </div>
             <div class="diary-input-container">
-                <div style="margin-bottom: 16px; color: #6b4e31; font-weight: 600;">
+                <div style="margin-bottom: 16px; color: #6b4e31; font-weight: 600; font-size: clamp(1rem, 4vw, 1.2rem);">
                     ✏️ Bagikan pengalaman menyenangkanmu:
                 </div>
                 <div class="diary-input-wrapper">
