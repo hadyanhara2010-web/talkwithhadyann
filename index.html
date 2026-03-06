@@ -354,7 +354,7 @@
             }
         }
 
-        /* Slider hewan dengan animasi auto slide */
+        /* Slider hewan dengan ukuran diperkecil setengahnya */
         .slider-wrapper {
             position: relative;
             overflow: hidden;
@@ -363,7 +363,7 @@
             border-radius: 48px;
             background: rgba(255,255,255,0.5);
             backdrop-filter: blur(4px);
-            padding: 16px 8px;
+            padding: 12px 6px; /* padding lebih kecil */
             box-shadow: var(--shadow);
             border: 1px solid #ffefe4;
             touch-action: pan-y pinch-zoom;
@@ -373,7 +373,7 @@
             width: max-content;
             cursor: grab;
             animation: autoSlide 40s linear infinite;
-            gap: 20px;
+            gap: 12px; /* gap lebih kecil */
             user-select: none;
             -webkit-user-select: none;
             will-change: transform;
@@ -383,36 +383,47 @@
         }
         .flower-slider.dragging {
             cursor: grabbing;
-            animation-play-state: paused; /* Pause animasi saat di-drag */
+            animation-play-state: paused;
         }
         @keyframes autoSlide {
             0% { transform: translateX(0); }
             100% { transform: translateX(-33.333%); }
         }
         .flower-item {
-            flex: 0 0 200px;
+            flex: 0 0 100px; /* setengah dari 200px */
             text-align: center;
             transition: 0.25s;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
         .flower-item img {
-            width: 200px;
-            height: 200px;
+            width: 100px; /* setengah dari 200px */
+            height: 100px; /* setengah dari 200px */
             object-fit: cover;
-            border-radius: 32px;
-            box-shadow: 0 15px 25px -8px rgba(80, 50, 25, 0.2);
-            border: 4px solid white;
+            border-radius: 20px; /* lebih kecil */
+            box-shadow: 0 8px 15px -5px rgba(80, 50, 25, 0.2);
+            border: 3px solid white;
             transition: 0.2s;
             background: #f7efe7;
             pointer-events: none;
         }
         .flower-item:hover img {
-            transform: scale(1.01);
+            transform: scale(1.02);
             border-color: #fadbc5;
         }
         .flower-item:active {
             opacity: 0.8;
+        }
+        
+        /* Responsive untuk tablet */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .flower-item {
+                flex: 0 0 150px; /* lebih besar dari mobile tapi tetap proporsional */
+            }
+            .flower-item img {
+                width: 150px;
+                height: 150px;
+            }
         }
         
         /* Popup */
@@ -653,7 +664,7 @@
             100%{ opacity:0; transform:translateY(-120px) scale(0.4); }
         }
 
-        /* Responsive */
+        /* Responsive untuk game */
         @media (max-width: 768px) {
             .mekar-game-container {
                 height: 500px;
@@ -675,14 +686,6 @@
             }
             .mekar-progress-item {
                 padding: 8px 16px;
-            }
-            
-            .flower-item {
-                flex: 0 0 150px;
-            }
-            .flower-item img {
-                width: 150px;
-                height: 150px;
             }
         }
 
@@ -706,14 +709,6 @@
             }
             .mekar-progress-item {
                 padding: 6px 12px;
-            }
-            
-            .flower-item {
-                flex: 0 0 120px;
-            }
-            .flower-item img {
-                width: 120px;
-                height: 120px;
             }
         }
 
@@ -794,7 +789,7 @@
         <div class="mekar-game-section" id="mekar">
             <h2 style="text-align:center; font-size:1.9rem; font-weight:600; color:#5a4740; margin-bottom:6px;">🌱 Mekar Harapan</h2>
             <p style="text-align:center; max-width:550px; margin:0 auto 25px; color:#6d5c53; background:#ffeee5; padding:10px 22px; border-radius:60px; font-size:0.95rem;">
-                Rawat hingga mekar, setiap tetes dan pupuk membawa perubahan.
+                Rawat hingga mekar — setiap tetes dan pupuk membawa perubahan.
             </p>
             
             <div class="mekar-game-container" id="mekar-game-container">
@@ -1014,7 +1009,7 @@
 
             function handleDragEnd(e) {
                 slider.classList.remove('dragging');
-                // Lanjutkan animasi setelah drag selesai (dengan sedikit delay)
+                // Lanjutkan animasi setelah drag selesai
                 setTimeout(() => {
                     if (!slider.classList.contains('dragging')) {
                         slider.style.animationPlayState = 'running';
