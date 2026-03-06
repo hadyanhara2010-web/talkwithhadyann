@@ -21,6 +21,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap abu-abu di mobile */
         }
       
         body {
@@ -301,7 +302,7 @@
             .diary-input-wrapper textarea {
                 width: 100%;
                 min-height: 120px;
-                font-size: 16px; /* Mencegah zoom on focus di iOS */
+                font-size: 16px;
             }
             
             .share-diary-btn {
@@ -330,7 +331,6 @@
             }
         }
 
-        /* Untuk layar sangat kecil */
         @media (max-width: 380px) {
             .diary-section {
                 padding: 16px 12px;
@@ -354,8 +354,7 @@
             }
         }
 
-        /* Chat section dihapus sesuai permintaan */
-        
+        /* Slider hewan - diperbaiki untuk klik di mobile */
         .slider-wrapper {
             position: relative;
             overflow: hidden;
@@ -367,28 +366,29 @@
             padding: 16px 8px;
             box-shadow: var(--shadow);
             border: 1px solid #ffefe4;
+            touch-action: pan-y pinch-zoom; /* Memungkinkan scroll horizontal dengan sentuhan */
         }
         .flower-slider {
             display: flex;
             width: max-content;
             cursor: grab;
-            animation: autoSlide 40s linear infinite;
             gap: 20px;
             user-select: none;
             -webkit-user-select: none;
+            transition: transform 0.05s ease; /* Halus saat dragging berhenti */
+            will-change: transform;
         }
-        .flower-slider.paused,
         .flower-slider.dragging {
-            animation-play-state: paused;
-        }
-        @keyframes autoSlide {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-33.333%); }
+            cursor: grabbing;
+            transition: none; /* Tidak ada transisi saat drag agar responsif */
         }
         .flower-item {
             flex: 0 0 200px;
             text-align: center;
             transition: 0.25s;
+            /* Pastikan area klik mencakup seluruh item */
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         .flower-item img {
             width: 200px;
@@ -399,11 +399,18 @@
             border: 4px solid white;
             transition: 0.2s;
             background: #f7efe7;
+            pointer-events: none; /* Gambar tidak menangkap event, biarkan parent yang handle */
         }
         .flower-item:hover img {
             transform: scale(1.01);
             border-color: #fadbc5;
         }
+        /* Efek tap di mobile */
+        .flower-item:active {
+            opacity: 0.8;
+        }
+        
+        /* Popup */
         #flowerPopup {
             position: fixed;
             inset: 0;
@@ -464,8 +471,8 @@
         }
         .close-btn:hover { background: #7d604c; }
 
-        /* Puzzle + game gabungan */
-        .puzzle-section {
+        /* Game Mekar Harapan */
+        .mekar-game-section {
             margin-top: 60px;
             background: rgba(255, 245, 240, 0.7);
             backdrop-filter: blur(3px);
@@ -473,123 +480,6 @@
             padding: 36px 20px;
             border: 2px solid #ffe3d6;
         }
-        .puzzle-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 5px;
-            max-width: 600px;
-            margin: 0 auto 30px;
-            background: #fbead7;
-            padding: 16px;
-            border-radius: 32px;
-            box-shadow: inset 0 0 0 2px white, inset 0 0 0 5px #f6dfce;
-        }
-        .puzzle-cell {
-            background: #fffdfa;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #2e404b;
-            border-radius: 12px;
-            border: 1px solid #f3cdb1;
-            box-shadow: 0 2px 0 #d8bba8;
-            padding: 0;
-            line-height: 1;
-            text-align: center;
-            transition: all 0.6s ease;
-        }
-        .puzzle-cell.correct {
-            background: #d4f4dd !important;
-            color: #1e6f3a !important;
-            border-color: #4caf50 !important;
-            box-shadow: 0 0 0 4px rgba(76,175,80,0.5), inset 0 0 15px rgba(76,175,80,0.4);
-            animation: pulse 1.8s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.12); }
-        }
-        .clue-form {
-            max-width: 600px;
-            margin: 20px auto 0;
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            background: white;
-            padding: 32px 24px;
-            border-radius: 40px;
-            box-shadow: 0 15px 25px -10px #ad8b78;
-            border: 1px solid #ffdcc4;
-        }
-        .clue-group label {
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #4e3a2e;
-            background: #f3ede8;
-            padding: 8px 16px;
-            border-radius: 40px;
-        }
-        .clue-group input {
-            width: 100%;
-            padding: 14px 18px;
-            font-size: 1.1rem;
-            border: 2px solid #ecdacf;
-            border-radius: 60px;
-            background: #fffcf5;
-            transition: 0.2s;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        .clue-group input:focus {
-            border-color: #a57c5c;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(165,124,92,0.15);
-        }
-        .submit-btn {
-            background: linear-gradient(145deg, #5f7f6b, #4d6655);
-            color: white;
-            border: none;
-            padding: 16px 20px;
-            font-size: 1.25rem;
-            border-radius: 100px;
-            cursor: pointer;
-            font-weight: 700;
-            letter-spacing: 2px;
-            transition: 0.2s;
-            border-bottom: 4px solid #2f4037;
-        }
-        .submit-btn:hover { background: #3f5a4c; }
-        #hasil {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: #f7f1ea;
-            padding: 16px;
-            border-radius: 60px;
-            color: #1f5e3a;
-        }
-        #motivasi {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 1.1rem;
-            color: #4b3d32;
-            background: #fff4e2;
-            padding: 28px 20px;
-            border-radius: 40px;
-            font-style: italic;
-            line-height: 1.7;
-            border-left: 10px solid #b6ad7a;
-        }
-
-        /* Gaya khusus game tanam (dari game.html) – digabung halus */
         .mekar-game-container {
             position: relative;
             width: 100%;
@@ -643,6 +533,7 @@
             height: 100%;
             object-fit: contain;
             filter: drop-shadow(0 6px 12px rgba(0,0,0,0.18));
+            pointer-events: none;
         }
         .mekar-progress-container {
             position: absolute;
@@ -757,7 +648,7 @@
             100%{ opacity:0; transform:translateY(-120px) scale(0.4); }
         }
 
-        /* Responsive untuk game Mekar Harapan di mobile */
+        /* Responsive */
         @media (max-width: 768px) {
             .mekar-game-container {
                 height: 500px;
@@ -803,10 +694,7 @@
             .mekar-progress-item {
                 padding: 6px 12px;
             }
-        }
-
-        /* Responsive untuk flower slider */
-        @media (max-width: 768px) {
+            
             .flower-item {
                 flex: 0 0 150px;
             }
@@ -816,37 +704,13 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 380px) {
             .flower-item {
                 flex: 0 0 120px;
             }
             .flower-item img {
                 width: 120px;
                 height: 120px;
-            }
-            .slider-wrapper {
-                padding: 12px 4px;
-            }
-        }
-
-        /* Responsive untuk puzzle grid */
-        @media (max-width: 640px) {
-            .puzzle-grid {
-                gap: 3px;
-                padding: 12px;
-            }
-            .puzzle-cell {
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .puzzle-grid {
-                gap: 2px;
-                padding: 8px;
-            }
-            .puzzle-cell {
-                font-size: 0.8rem;
             }
         }
 
@@ -870,7 +734,6 @@
         <div class="nav-dropdown" id="navDropdown">
             <a href="#beranda">Beranda</a>
             <a href="#diary">Diary</a>
-            <a href="#puzzle">Game</a>
             <a href="#bunga">Kartu</a>
         </div>
     </nav>
@@ -924,89 +787,49 @@
             <input type="text" name="entry.1921997133" id="entryValue" value="">
         </form>
 
-        <!-- BAGIAN CHAT DIHAPUS SESUAI PERMINTAAN -->
-
-        <section id="puzzle" class="puzzle-section">
-            <h2 style="text-align:center; font-size:1.9rem; font-weight:600; color:#5a4740; margin-bottom:6px;">Temukan Urutan Huruf</h2>
+        <!-- Game Mekar Harapan -->
+        <div class="mekar-game-section" id="mekar">
+            <h2 style="text-align:center; font-size:1.9rem; font-weight:600; color:#5a4740; margin-bottom:6px;">🌱 Mekar Harapan</h2>
             <p style="text-align:center; max-width:550px; margin:0 auto 25px; color:#6d5c53; background:#ffeee5; padding:10px 22px; border-radius:60px; font-size:0.95rem;">
-                Ada 3 kata tersembunyi. Hanya satu susunan untuk masing-masing.
+                Rawat hingga mekar — setiap tetes dan pupuk membawa perubahan.
             </p>
-            <div class="puzzle-grid" id="puzzleGrid">
-                <!-- baris 1 -->
-                <div class="puzzle-cell">F</div><div class="puzzle-cell">G</div><div class="puzzle-cell">H</div><div class="puzzle-cell">A</div><div class="puzzle-cell">K</div><div class="puzzle-cell">U</div><div class="puzzle-cell">S</div><div class="puzzle-cell">D</div><div class="puzzle-cell">L</div><div class="puzzle-cell">P</div><div class="puzzle-cell">Z</div><div class="puzzle-cell">M</div>
-                <!-- baris 2 -->
-                <div class="puzzle-cell">B</div><div class="puzzle-cell">N</div><div class="puzzle-cell">V</div><div class="puzzle-cell">C</div><div class="puzzle-cell">E</div><div class="puzzle-cell">T</div><div class="puzzle-cell">W</div><div class="puzzle-cell">Y</div><div class="puzzle-cell">Q</div><div class="puzzle-cell">J</div><div class="puzzle-cell">X</div><div class="puzzle-cell">O</div>
-                <!-- baris 3 -->
-                <div class="puzzle-cell">K</div><div class="puzzle-cell">S</div><div class="puzzle-cell">E</div><div class="puzzle-cell">L</div><div class="puzzle-cell">A</div><div class="puzzle-cell">L</div><div class="puzzle-cell">U</div><div class="puzzle-cell">D</div><div class="puzzle-cell">M</div><div class="puzzle-cell">F</div><div class="puzzle-cell">P</div><div class="puzzle-cell">Z</div>
-                <!-- baris 4 -->
-                <div class="puzzle-cell">O</div><div class="puzzle-cell">N</div><div class="puzzle-cell">H</div><div class="puzzle-cell">A</div><div class="puzzle-cell">K</div><div class="puzzle-cell">A</div><div class="puzzle-cell">T</div><div class="puzzle-cell">L</div><div class="puzzle-cell">R</div><div class="puzzle-cell">G</div><div class="puzzle-cell">I</div><div class="puzzle-cell">Y</div>
-                <!-- baris 5 -->
-                <div class="puzzle-cell">C</div><div class="puzzle-cell">A</div><div class="puzzle-cell">E</div><div class="puzzle-cell">B</div><div class="puzzle-cell">T</div><div class="puzzle-cell">I</div><div class="puzzle-cell">U</div><div class="puzzle-cell">W</div><div class="puzzle-cell">E</div><div class="puzzle-cell">B</div><div class="puzzle-cell">F</div><div class="puzzle-cell">Q</div>
-                <!-- baris 6 -->
-                <div class="puzzle-cell">J</div><div class="puzzle-cell">K</div><div class="puzzle-cell">B</div><div class="puzzle-cell">A</div><div class="puzzle-cell">N</div><div class="puzzle-cell">O</div><div class="puzzle-cell">P</div><div class="puzzle-cell">U</div><div class="puzzle-cell">V</div><div class="puzzle-cell">W</div><div class="puzzle-cell">X</div><div class="puzzle-cell">D</div>
-                <!-- baris 7 -->
-                <div class="puzzle-cell">G</div><div class="puzzle-cell">H</div><div class="puzzle-cell">A</div><div class="puzzle-cell">T</div><div class="puzzle-cell">K</div><div class="puzzle-cell">L</div><div class="puzzle-cell">M</div><div class="puzzle-cell">N</div><div class="puzzle-cell">O</div><div class="puzzle-cell">P</div><div class="puzzle-cell">Q</div><div class="puzzle-cell">R</div>
-                <!-- baris 8 -->
-                <div class="puzzle-cell">S</div><div class="puzzle-cell">T</div><div class="puzzle-cell">T</div><div class="puzzle-cell">V</div><div class="puzzle-cell">W</div><div class="puzzle-cell">X</div><div class="puzzle-cell">Y</div><div class="puzzle-cell">Z</div><div class="puzzle-cell">A</div><div class="puzzle-cell">B</div><div class="puzzle-cell">C</div><div class="puzzle-cell">D</div>
-            </div>
-            <form class="clue-form" onsubmit="event.preventDefault(); cekJawaban();">
-                <div class="clue-group">
-                    <label>1. Kata ganti orang pertama tunggal</label>
-                    <input type="text" id="ans1" placeholder="Tulis jawaban..." autocomplete="off">
+            
+            <div class="mekar-game-container" id="mekar-game-container">
+                <canvas id="mekar-canvas"></canvas>
+                <div class="mekar-plant-highlight" id="mekar-plant-highlight"></div>
+                
+                <div class="mekar-resource-icons" id="mekar-resource-icons">
+                    <div class="mekar-resource-icon" id="mekar-water-icon" data-type="water">
+                        <img id="mekar-water-icon-img" alt="Air">
+                    </div>
+                    <div class="mekar-resource-icon" id="mekar-fertilizer-icon" data-type="fertilizer">
+                        <img id="mekar-fertilizer-icon-img" alt="Pupuk">
+                    </div>
                 </div>
-                <div class="clue-group">
-                    <label>2. Terus menerus / berulang-ulang</label>
-                    <input type="text" id="ans2" placeholder="Tulis jawaban..." autocomplete="off">
-                </div>
-                <div class="clue-group">
-                    <label>3. Lagu Coboy Junior (kamu ....) & kamu ____</label>
-                    <input type="text" id="ans3" placeholder="Tulis jawaban..." autocomplete="off">
-                </div>
-                <button type="submit" class="submit-btn">✨ Cek Jawaban ✨</button>
-            </form>
-            <div id="hasil"></div>
-            <div id="motivasi"></div>
-
-            <!-- GABUNGAN GAME.HTML (tanaman) di bawah puzzle, tanpa mengubah apapun -->
-            <div style="margin-top: 50px;">
-                <h3 style="text-align:center; color:#6b4e31;">🌱 Mekar Harapan — rawat hingga mekar</h3>
-                <div class="mekar-game-container" id="mekar-game-container">
-                    <canvas id="mekar-canvas"></canvas>
-                    <div class="mekar-plant-highlight" id="mekar-plant-highlight"></div>
-                    
-                    <div class="mekar-resource-icons" id="mekar-resource-icons">
-                        <div class="mekar-resource-icon" id="mekar-water-icon" data-type="water">
-                            <img id="mekar-water-icon-img" alt="Air">
+                
+                <div class="mekar-progress-container" id="mekar-progress-container">
+                    <div class="mekar-progress-phase" id="mekar-progress-phase">Fase 1 dari 5</div>
+                    <div class="mekar-progress-resources">
+                        <div class="mekar-progress-item">
+                            <span>💧</span>
+                            <span id="mekar-water-progress">0/1</span>
                         </div>
-                        <div class="mekar-resource-icon" id="mekar-fertilizer-icon" data-type="fertilizer">
-                            <img id="mekar-fertilizer-icon-img" alt="Pupuk">
+                        <div class="mekar-progress-item">
+                            <span>🌱</span>
+                            <span id="mekar-fertilizer-progress">0/1</span>
                         </div>
                     </div>
-                    
-                    <div class="mekar-progress-container" id="mekar-progress-container">
-                        <div class="mekar-progress-phase" id="mekar-progress-phase">Fase 1 dari 5</div>
-                        <div class="mekar-progress-resources">
-                            <div class="mekar-progress-item">
-                                <span>💧</span>
-                                <span id="mekar-water-progress">0/1</span>
-                            </div>
-                            <div class="mekar-progress-item">
-                                <span>🌱</span>
-                                <span id="mekar-fertilizer-progress">0/1</span>
-                            </div>
-                        </div>
+                </div>
+                
+                <div class="mekar-completion-overlay" id="mekar-completion-overlay">
+                    <div class="mekar-completion-title">Proud of You!</div>
+                    <div class="mekar-completion-message" id="mekar-completion-message">
+                        Layaknya tumbuhan ini, jika kamu rajin dan berfokus pada prosesmu sendiri, kelak kamu akan bersemi indah.
                     </div>
-                    
-                    <div class="mekar-completion-overlay" id="mekar-completion-overlay">
-                        <div class="mekar-completion-title">Proud of You!</div>
-                        <div class="mekar-completion-message" id="mekar-completion-message">
-                            Layaknya tumbuhan ini, jika kamu rajin dan berfokus pada prosesmu sendiri, kelak kamu akan bersemi indah.
-                        </div>
-                        <button class="mekar-restart-button" id="mekar-restart-button">Tumbuhkan Bunga Lainnya</button>
-                    </div>
+                    <button class="mekar-restart-button" id="mekar-restart-button">Tumbuhkan Bunga Lainnya</button>
                 </div>
             </div>
-        </section>
+        </div>
     </div>
 
     <h1 id="bunga">Tentukan Pilihanmu</h1>
@@ -1040,7 +863,7 @@
         </div>
     </div>
 
-    <!-- script untuk hamburger menu (agar tiga titik bisa diklik) -->
+    <!-- Script untuk hamburger menu -->
     <script>
         (function() {
             const hamburger = document.getElementById('hamburgerBtn');
@@ -1073,14 +896,12 @@
                 }
             });
 
-            // Tutup dropdown jika klik di luar (opsional)
             document.addEventListener('click', (e) => {
                 if (!dropdown.contains(e.target) && !hamburger.contains(e.target) && dropdown.classList.contains('show')) {
                     toggleMenu(false);
                 }
             });
 
-            // Smooth scroll untuk link dropdown
             dropdown.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1099,7 +920,7 @@
         })();
     </script>
 
-    <!-- script untuk submit ke Google Form dengan entry.1921997133 -->
+    <!-- Script untuk submit ke Google Form -->
     <script>
         function submitToGoogleForm() {
             const diaryText = document.getElementById('diaryText').value.trim();
@@ -1113,27 +934,131 @@
                 return;
             }
 
-            // Set nilai ke hidden input
             document.getElementById('entryValue').value = diaryText;
-            
-            // Submit form ke Google Form
             document.getElementById('googleForm').submit();
             
-            // Tampilkan pesan sukses
             document.getElementById('successMessage').style.display = 'flex';
             document.getElementById('errorMessage').style.display = 'none';
-            
-            // Kosongkan textarea
             document.getElementById('diaryText').value = '';
             
-            // Sembunyikan pesan sukses setelah 3 detik
             setTimeout(() => {
                 document.getElementById('successMessage').style.display = 'none';
             }, 3000);
         }
     </script>
 
-    <!-- script game Mekar Harapan dimasukkan persis dari game.html, hanya ubah prefix ID -->
+    <!-- Script untuk slider hewan yang bisa diklik di mobile -->
+    <script>
+        (function() {
+            // Deskripsi hewan
+            const descriptions = {
+                "burung-hantu": { title: "🦉 Burung Hantu – Bijaksana dalam Sunyi", desc: "Tak perlu selalu terlihat untuk menjadi hebat. Seperti burung hantu, gunakan ketenanganmu untuk berpikir tajam dan melangkah dengan penuh perhitungan." },
+                "singa": { title: "🦁 Singa – Berani Memimpin", desc: "Jadilah seperti singa: bukan karena paling keras suaranya, tetapi karena paling yakin pada dirinya sendiri." },
+                "badak": { title: "🦏 Badak – Tangguh dan Tak Mudah Goyah", desc: "Seperti badak, hadapi rintangan dengan kekuatan dan keteguhan. Jangan mundur hanya karena jalan terasa berat." },
+                "gajah": { title: "🐘 Gajah – Kuat dan Penuh Ingatan", desc: "Belajarlah dari gajah: kuat dalam langkah, lembut dalam hati, dan tak melupakan pelajaran hidup." },
+                "semut": { title: "🐜 Semut – Kecil Namun Gigih", desc: "Jangan remehkan langkah kecilmu. Seperti semut, kerja keras dan konsistensi akan membawa hasil besar." }
+            };
+
+            const slider = document.getElementById('slider');
+            const items = document.querySelectorAll('.flower-item');
+            const popup = document.getElementById('flowerPopup');
+            const titleEl = document.getElementById('flowerTitle');
+            const descEl = document.getElementById('flowerDesc');
+
+            // Variabel untuk drag
+            let isDragging = false;
+            let startX, scrollLeft;
+            let dragThreshold = 5; // Pixel threshold untuk membedakan klik dan drag
+            let startXPos;
+
+            // Event handler untuk membuka popup
+            function openPopup(flowerKey) {
+                if (descriptions[flowerKey]) {
+                    titleEl.textContent = descriptions[flowerKey].title;
+                    descEl.textContent = descriptions[flowerKey].desc;
+                    popup.classList.add('active');
+                }
+            }
+
+            // Mouse/Touch event untuk drag & klik
+            function handleDragStart(e) {
+                // Ambil posisi X (mouse atau sentuhan)
+                const pageX = e.type === 'mousedown' ? e.pageX : e.touches[0].pageX;
+                isDragging = false; // Reset dulu, akan jadi true jika digerakkan cukup jauh
+                startX = pageX - slider.offsetLeft;
+                startXPos = pageX;
+                scrollLeft = slider.scrollLeft;
+                slider.classList.add('dragging');
+            }
+
+            function handleDragMove(e) {
+                if (!slider.classList.contains('dragging')) return;
+                e.preventDefault(); // Mencegah scroll halaman saat drag slider
+                
+                const pageX = e.type === 'mousemove' ? e.pageX : e.touches[0].pageX;
+                const x = pageX - slider.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                slider.scrollLeft = scrollLeft - walk;
+                
+                // Jika pergerakan melebihi threshold, anggap sebagai drag
+                if (Math.abs(pageX - startXPos) > dragThreshold) {
+                    isDragging = true;
+                }
+            }
+
+            function handleDragEnd(e) {
+                slider.classList.remove('dragging');
+                
+                // Jika tidak ada drag (pergerakan kecil), anggap sebagai klik
+                if (!isDragging) {
+                    // Cari elemen flower-item yang diklik
+                    let target = e.target;
+                    // Cari parent dengan class flower-item
+                    while (target && !target.classList.contains('flower-item')) {
+                        target = target.parentElement;
+                    }
+                    
+                    if (target && target.classList.contains('flower-item')) {
+                        const flowerKey = target.getAttribute('data-flower');
+                        openPopup(flowerKey);
+                    }
+                }
+                
+                isDragging = false;
+            }
+
+            // Pasang event listener
+            slider.addEventListener('mousedown', handleDragStart);
+            slider.addEventListener('mousemove', handleDragMove);
+            slider.addEventListener('mouseup', handleDragEnd);
+            slider.addEventListener('mouseleave', () => {
+                slider.classList.remove('dragging');
+                isDragging = false;
+            });
+
+            // Touch events
+            slider.addEventListener('touchstart', handleDragStart, { passive: false });
+            slider.addEventListener('touchmove', handleDragMove, { passive: false });
+            slider.addEventListener('touchend', handleDragEnd);
+            slider.addEventListener('touchcancel', () => {
+                slider.classList.remove('dragging');
+                isDragging = false;
+            });
+
+            // Fallback klik langsung di item (untuk jaga-jaga)
+            items.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    // Hanya proses jika bukan drag (dicegah oleh flag isDragging)
+                    if (!isDragging) {
+                        const flowerKey = item.getAttribute('data-flower');
+                        openPopup(flowerKey);
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <!-- Script game Mekar Harapan (tetap sama) -->
     <script>
         (function() {
             // ────────────────────────────────────────────────
@@ -1169,7 +1094,6 @@
                 5: 'sunflower_bloomed_happy'
             };
 
-            // elemen dengan prefiks mekar-
             const canvas = document.getElementById('mekar-canvas');
             const ctx = canvas.getContext('2d');
             const waterIcon = document.getElementById('mekar-water-icon');
@@ -1405,75 +1329,6 @@
             }
             startMekar();
         })();
-    </script>
-
-    <!-- sisanya fungsi index asli -->
-    <script>
-        const descriptions = {
-            "burung-hantu": { title: "🦉 Burung Hantu – Bijaksana dalam Sunyi", desc: "Tak perlu selalu terlihat untuk menjadi hebat. Seperti burung hantu, gunakan ketenanganmu untuk berpikir tajam dan melangkah dengan penuh perhitungan." },
-            "singa": { title: "🦁 Singa – Berani Memimpin", desc: "Jadilah seperti singa: bukan karena paling keras suaranya, tetapi karena paling yakin pada dirinya sendiri." },
-            "badak": { title: "🦏 Badak – Tangguh dan Tak Mudah Goyah", desc: "Seperti badak, hadapi rintangan dengan kekuatan dan keteguhan. Jangan mundur hanya karena jalan terasa berat." },
-            "gajah": { title: "🐘 Gajah – Kuat dan Penuh Ingatan", desc: "Belajarlah dari gajah: kuat dalam langkah, lembut dalam hati, dan tak melupakan pelajaran hidup." },
-            "semut": { title: "🐜 Semut – Kecil Namun Gigih", desc: "Jangan remehkan langkah kecilmu. Seperti semut, kerja keras dan konsistensi akan membawa hasil besar." }
-        };
-
-        document.querySelectorAll('.flower-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const key = this.getAttribute('data-flower');
-                if (descriptions[key]) {
-                    document.getElementById('flowerTitle').textContent = descriptions[key].title;
-                    document.getElementById('flowerDesc').textContent = descriptions[key].desc;
-                    document.getElementById('flowerPopup').classList.add('active');
-                }
-            });
-        });
-
-        const slider = document.querySelector('#slider');
-        let isDragging = false, startX, scrollLeft;
-        function startDrag(e) { isDragging = true; slider.classList.add('dragging'); startX = (e.pageX || e.touches[0].pageX) - slider.offsetLeft; scrollLeft = slider.scrollLeft; e.preventDefault(); }
-        function stopDrag() { isDragging = false; slider.classList.remove('dragging'); }
-        function drag(e) { if (!isDragging) return; e.preventDefault(); const x = (e.pageX || e.touches[0].pageX) - slider.offsetLeft; const walk = (x - startX) * 1.5; slider.scrollLeft = scrollLeft - walk; }
-        slider.addEventListener('mousedown', startDrag);
-        slider.addEventListener('mouseleave', stopDrag);
-        slider.addEventListener('mouseup', stopDrag);
-        slider.addEventListener('mousemove', drag);
-        slider.addEventListener('touchstart', startDrag);
-        slider.addEventListener('touchend', stopDrag);
-        slider.addEventListener('touchcancel', stopDrag);
-        slider.addEventListener('touchmove', drag);
-
-        function highlightCorrectAnswers() {
-            const cells = document.querySelectorAll('.puzzle-cell');
-            cells[3].classList.add('correct'); cells[4].classList.add('correct'); cells[5].classList.add('correct');
-            cells[6].classList.add('correct'); cells[7].classList.add('correct'); cells[8].classList.add('correct'); cells[9].classList.add('correct'); cells[10].classList.add('correct');
-            cells[27].classList.add('correct'); cells[39].classList.add('correct'); cells[51].classList.add('correct'); cells[63].classList.add('correct'); cells[75].classList.add('correct');
-        }
-
-        window.cekJawaban = function() {
-            const ans1 = document.getElementById('ans1').value.trim().toUpperCase();
-            const ans2 = document.getElementById('ans2').value.trim().toUpperCase();
-            const ans3 = document.getElementById('ans3').value.trim().toUpperCase();
-            let hasil = "", motivasi = "";
-            if (ans1 === "AKU" && ans2 === "TERUS" && ans3 === "HEBAT") {
-                hasil = "✅ SEMUA JAWABAN BENAR! SELAMAT!";
-                motivasi = "Kamu memang hebat! Teruslah menjadi pribadi yang tangguh dan rendah hati. Ingatlah selalu: 'Aku bisa, aku hebat, aku berarti.' - Hadyan";
-                highlightCorrectAnswers();
-            } else if (ans1 === "AKU" && ans2 === "TERUS") {
-                hasil = "⚠️ Jawaban 3 belum tepat.";
-                motivasi = "Cari kata vertikal di kolom ke-4 dari kiri, mulai dari baris ke-3 ke bawah.";
-            } else if (ans1 === "AKU" && ans3 === "HEBAT") {
-                hasil = "⚠️ Jawaban 2 belum tepat.";
-                motivasi = "Cari 'TERUS' secara mendatar di baris awal.";
-            } else if (ans2 === "TERUS" && ans3 === "HEBAT") {
-                hasil = "⚠️ Jawaban 1 belum tepat.";
-                motivasi = "Cari kata ganti orang pertama tunggal ('AKU').";
-            } else {
-                hasil = "❌ Masih ada yang salah. Coba lagi!";
-                motivasi = "Jangan menyerah! Setiap percobaan membuatmu lebih dekat ke jawaban.";
-            }
-            document.getElementById('hasil').innerText = hasil;
-            document.getElementById('motivasi').innerText = motivasi;
-        };
     </script>
 </body>
 </html>
